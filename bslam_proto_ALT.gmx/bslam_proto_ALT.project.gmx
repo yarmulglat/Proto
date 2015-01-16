@@ -33,6 +33,7 @@
       <sprite>sprites\spr_abobo_dunked</sprite>
       <sprite>sprites\spr_abobo_prone</sprite>
     </sprites>
+    <sprite>sprites\spr_dunkzone</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -43,6 +44,8 @@
     <object>objects\obj_haggar</object>
     <object>objects\wall_chunk</object>
     <object>objects\obj_abobo</object>
+    <object>objects\obj_marker1</object>
+    <object>objects\obj_dunkzone</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room1</room>

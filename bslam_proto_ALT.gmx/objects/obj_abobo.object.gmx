@@ -31,7 +31,9 @@ image_speed = .2;
 
 alarm[1] = 30;
 text = "alarm 1"
-//punching bag create, to be overwritten by universal player variables
+
+spinny = false;
+
 
 reset = false;
 vulnerable = true;
@@ -49,6 +51,7 @@ jpowermax = 25;
 
 throwpower = 10;
 tpowermax = 20;
+slammo = 0;
 
 cangrab = true;
 grab = false;
@@ -61,6 +64,32 @@ dunk = false;
 
 slammed = false;
 dunked = false;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="2" enumb="2">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>//SLAMMO RESET
+slammo = 0;
+tenderized += .1;
+
 </string>
           </argument>
         </arguments>
@@ -121,11 +150,13 @@ else if tenderized &lt;1 {
             <string>///Stand up and fight
 sprite_index = spr_abobo;
 stunned = false;
+spinny = false;
 vulnerable = true;
 slammed = false;
 dunked = false;
 image_yscale = 1;
 image_xscale = 1;
+image_angle = 0;
 
 </string>
           </argument>
@@ -208,19 +239,22 @@ if(z&lt;1 and as!=0)//if we've hit the ground
     as=0;//we stop moving through the air
 }
 
-if jump == false{  //test to stop dunk movement
+if jump == false{  //Simple way to stop directional dunk momentum
     hspeed = 0}
-
+    
+if sprite_index = spr_abobo_prone { //Failsafe to ensure no hits while you're down
+    vulnerable = false
+    }
  
 //face your opponent
-        if (x &lt;= obj_haggar.x) &amp;&amp; stunned == false &amp;&amp; dunked == false &amp;&amp; slammed == false &amp;&amp; sprite_index != spr_abobo_prone{
+        if (x &lt;= obj_haggar.x) &amp;&amp; sprite_index != spr_abobo_prone{
             image_xscale = 1;
             } else {
               image_xscale = -1;
             }
-          //  if grabbed = false &amp;&amp; stunned = false { //temp fix for permastungrab
-    //sprite_index = spr_abobo}
-
+        
+      
+        
 //Get grabbed, son
 
 if place_meeting(x,y,obj_haggar) &amp;&amp; (obj_haggar.sprite_index == spr_haggar_grab) &amp;&amp; z &lt; obj_haggar.z +12 &amp;&amp; z &gt; obj_haggar.z -15 &amp;&amp; vulnerable == true{
@@ -242,34 +276,37 @@ if stunned = true {
                cangrab = false
                canthrow = false
                canmove = false 
-                */
-}
+               can_do_whatever_else = FALSE!
+                */}
 
-//TESTING NEW DUNK LOCATION  !!!!!!!!!!!!!!!!!!!!!!!!!CURRENT ISSUE
+//GET DUNKED!
 if dunked == true{
-    var i = obj_haggar.z;//trying to determine height at time of dunk
+     slammo += 1;
      grabbed = false;
      vulnerable = false;
      alarm [0] = 70 * tenderized;
-        {if (obj_haggar.z ==0 &amp;&amp; obj_haggar.as ==0){
+        {if (z ==0 &amp;&amp; as ==0){
             dunked = false;
             slammed = true;
+            }
         }
-        }
- }                        
+                         
 
-   //ARE YOU SLAMMED? - I'm TRYING TO FIND OUT
-{if slammed = true{//keyboard_check_pressed(ord('T')){
+   //ARE YOU SLAMMED? 
+if slammed = true
+    {
     reset = true;
     sprite_index = spr_abobo_prone;
     vulnerable = false;
     alarm [0] = 70 * tenderized;
     z = 1;
-    as = -i; //trying to make bounce proportionate to dunk height
+    as = slammo * .8; //Turns out you are slammed.
+    alarm[2] = 20;  
     }
 }
 
 
+//BREAK
 {         
 //grabbed!
 if (grabbed = true) &amp;&amp; obj_haggar.image_xscale = 1{
@@ -310,7 +347,7 @@ if (grabbed == true || obj_haggar.dunk == true) &amp;&amp; obj_haggar.jump = tru
 }
 
 
-//get throwed   ????Z-POSITION changed from 1 to obj_haggar
+//get throwed   
 if thrown == true{
     grabbed = false;
     if z &lt;=0{ 
@@ -372,6 +409,36 @@ if reset = true{
 
 }
 
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="4" ename="obj_dunkzone">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///TBD IMPACT EFFECT, currently screwed up due to z axis and time spend in zone
+
+/*
+if obj_abobo.slammo &gt;1 &amp;&amp; z &lt; obj_dunkzone.z +12 &amp;&amp; z &gt; obj_dunkzone.z -15
+    {
+    obj_abobo.slammo +=60;
+    obj_abobo.image_angle += 20;
+    }
 </string>
           </argument>
         </arguments>
